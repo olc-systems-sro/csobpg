@@ -1,0 +1,14 @@
+*.egg-info
+/.venv
+**/__pycache__
+/dist
+
+# tests coverage
+.coverage
+htmlcov
+
+.keys
+
+# pyevn
+.python-version
+#
