@@ -55,6 +55,8 @@ class PaymentReverseResponse(Response):
             f"{self.__class__.__name__}("
             f"pay_id='{self.pay_id}', "
             f"dttm='{self.dttm}', "
+            f"result_code={self.result_code}, "
+            f"result_message='{self.result_message}', "
             f"status={self.payment_status}, "
             f"status_detail={self.status_detail}"
             ")"

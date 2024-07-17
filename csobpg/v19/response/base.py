@@ -59,21 +59,11 @@ class Response(SignedModel, ABC):
                 f"Invalid resultCode {response['resultCode']} in response"
             ) from None
 
-        result_message = response.get("resultMessage", "")
-        raise_for_result_code(result_code, result_message)
-
-        try:
-            dttm = response["dttm"]
-        except KeyError:
-            raise APIClientError(
-                "API response does not contain dttm"
-            ) from None
-
         obj = cls._from_json(
             response,
-            dttm,
+            response.get("dttm", ""),
             result_code,
-            result_message,
+            response.get("resultMessage", ""),
         )
 
         try:
@@ -84,6 +74,10 @@ class Response(SignedModel, ABC):
         verify(signature, obj.to_sign_text().encode(), public_key)
 
         return obj
+
+    def raise_for_result_code(self) -> None:
+        """Raise exception if result code != 0."""
+        raise_for_result_code(self.result_code, self.result_message)
 
     @classmethod
     @abstractmethod
