@@ -81,8 +81,13 @@ response = client.refund_payment(pay_id, amount=100)
 from csobpg.v19.errors import APIError, APIClientError
 from csobpg.http import HTTPRequestError
 
+response = client.<operation>(...)
+# you can access the response_code directly:
+assert response.result_code == 0
+
+# or call the `raise_for_result_code` method and handle exceptions:
 try:
-    response = client.<operation>(...)
+    response.raise_for_result_code()
 except APIError as exc:
     # handle API error
     # it is raised on any API error. You may also catch the specific API error
