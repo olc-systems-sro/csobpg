@@ -140,3 +140,9 @@ class OrderData(SignedModel):
             self.reorder,
             self.gift_cards,
         )
+
+    def __str__(self) -> str:
+        return (
+            f"{self.__class__.__name__}(order_type={self.order_type}, "
+            f"availability={self.availability})"
+        )

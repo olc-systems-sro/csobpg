@@ -73,3 +73,9 @@ class CustomerData(SignedModel):
             self.account,
             self.login,
         )
+
+    def __str__(self) -> str:
+        return (
+            f"{self.__class__.__name__}(name='{self.name}', "
+            f"email='{self.email}', mobile_phone={self.mobile_phone})"
+        )
