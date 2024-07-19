@@ -1,8 +1,11 @@
 """Base client."""
 
 import json as jsonlib
+import logging
 from abc import ABC, abstractmethod
 from typing import Optional
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class HTTPRequestError(Exception):
@@ -101,4 +104,7 @@ class HTTPClient(ABC):
         :param json: JSON data to post
         :param headers: headers
         """
-        return self._request(method, url, json, headers=headers)
+        _LOGGER.debug("%s %s; json=%s", method.upper(), url, json)
+        resp = self._request(method, url, json, headers=headers)
+        _LOGGER.debug("API response: %s. Raw body: %s", resp, resp.body)
+        return resp

@@ -1,5 +1,6 @@
 """API client."""
 
+import logging
 from typing import Optional, Union
 
 from csobpg.http import HTTPClient
@@ -51,6 +52,8 @@ class APIClient:
 
         self._http_client = http_client
 
+        self._log = logging.getLogger(__name__)
+
     def init_payment(
         self,
         order_no: str,
@@ -72,6 +75,27 @@ class APIClient:
         page_appearance: _payment_init.WebPageAppearanceConfig = _payment_init.WebPageAppearanceConfig(),
     ) -> PaymentInitResponse:
         """Init payment."""
+        self._log.info(
+            'Initializing payment: order_no="%s", total_amount=%s, '
+            'return_url="%s", return_method=%s, payment_operation=%s, '
+            "payment_method=%s, currency=%s, close_payment=%s, ttl_sec=%s, "
+            "cart=%s, customer=%s, order=%s, customer_id=%s, "
+            "payment_expiry=%s",
+            order_no,
+            total_amount,
+            return_url,
+            return_method,
+            payment_operation,
+            payment_method,
+            currency,
+            close_payment,
+            ttl_sec,
+            cart,
+            customer,
+            order,
+            customer_id,
+            payment_expiry,
+        )
         request = _PaymentInitRequest(
             self.merchant_id,
             str(self.private_key),
@@ -103,6 +127,7 @@ class APIClient:
 
     def get_payment_status(self, pay_id: str) -> PaymentStatusResponse:
         """Request payment status information."""
+        self._log.info("Requesting payment status for pay_id=%s", pay_id)
         request = _PaymentStatusRequest(
             self.merchant_id, str(self.private_key), pay_id
         )
@@ -116,6 +141,7 @@ class APIClient:
 
         :param pay_id: payment ID
         """
+        self._log.info("Reversing payment for pay_id=%s", pay_id)
         request = _PaymentReverseRequest(
             self.merchant_id, str(self.private_key), pay_id
         )
@@ -135,6 +161,11 @@ class APIClient:
           less or equal to the original amount and provided in hundredths of
           the base currency
         """
+        self._log.info(
+            "Closing payment for pay_id=%s, total_amount=%s",
+            pay_id,
+            total_amount,
+        )
         request = _PaymentCloseRequest(
             self.merchant_id, str(self.private_key), pay_id, total_amount
         )
@@ -157,6 +188,9 @@ class APIClient:
           original amount and provided in hundredths of the base currency.
           If not provided, the full amount will be refunded.
         """
+        self._log.info(
+            "Refunding payment for pay_id=%s, amount=%s", pay_id, amount
+        )
         request = _PaymentRefundRequest(
             self.merchant_id, str(self.private_key), pay_id, amount
         )
@@ -173,6 +207,7 @@ class APIClient:
         :param pay_id: pay_id obtained from `payment_init`
         :return: url to process payment
         """
+        self._log.info("Building payment URL for pay_id=%s", pay_id)
         return self._build_url(
             _PaymentProcessRequest(
                 self.merchant_id, str(self.private_key), pay_id
@@ -181,6 +216,7 @@ class APIClient:
 
     def echo(self) -> None:
         """Make an echo request."""
+        self._log.info("Making echo request")
         request = _EchoRequest(self.merchant_id, str(self.private_key))
         self._call_api(
             "post", self._build_url(request.endpoint), request.to_json()
@@ -188,6 +224,7 @@ class APIClient:
 
     def process_gateway_return(self, datadict: dict) -> PaymentProcessResponse:
         """Process gateway return."""
+        self._log.info("Processing gateway return %s", datadict)
         data = {}
 
         for key in datadict:
@@ -207,3 +244,6 @@ class APIClient:
 
     def _build_url(self, endpoint: str) -> str:
         return f"{self.base_url}/{endpoint.strip('/')}/"
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(merchant_id='{self.merchant_id}')"

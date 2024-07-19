@@ -1,6 +1,7 @@
 """Module for building signatures."""
 
 import binascii
+import logging
 from abc import ABC, abstractmethod
 from base64 import b64decode, b64encode
 
@@ -9,6 +10,8 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
 from .errors import APIInvalidSignatureError
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def _str_or_jsbool(val):
@@ -43,6 +46,7 @@ class SignedModel(ABC):
 
 def sign(text: bytes, key: str) -> str:
     """Sign the text with the given key."""
+    _LOGGER.debug('Signing "%s"', text)
     key = RSA.importKey(key)  # type: ignore
     hasher = SHA256.new(text)
     signer = PKCS1_v1_5.new(key)  # type: ignore
@@ -56,6 +60,7 @@ def verify(signature: str, text: bytes, key: str) -> None:
     :param text: text to sign and verify against the signature
     :param key: public key to verify the signature
     """
+    _LOGGER.debug('Verifying "%s" against "%s"', signature, text)
     key = RSA.importKey(key)  # type: ignore
     hasher = SHA256.new(text)
     verifier = PKCS1_v1_5.new(key)  # type: ignore
