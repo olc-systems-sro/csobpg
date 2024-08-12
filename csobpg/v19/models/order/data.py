@@ -3,9 +3,9 @@
 from enum import Enum
 from typing import Optional
 
-from ....signature import SignedModel
-from ...fields import _IntField
+from ...signature import SignedModel
 from ..currency import Currency
+from ..fields import _IntField
 from .address import AddressData
 from .delivery import DeliveryData
 

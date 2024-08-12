@@ -1,4 +1,4 @@
-"""Response wrapper for payment/status."""
+"""Response wrapper for oneclick/init."""
 
 from typing import Optional
 
@@ -7,8 +7,8 @@ from csobpg.v19.models import actions as _actions
 from .base import PaymentStatus, Response, get_payment_status
 
 
-class PaymentStatusResponse(Response):
-    """Payment status response."""
+class OneClickPaymentInitResponse(Response):
+    """OneClick Payment init response."""
 
     def __init__(
         self,
@@ -17,37 +17,34 @@ class PaymentStatusResponse(Response):
         result_code: int,
         result_message: str,
         payment_status: Optional[PaymentStatus] = None,
-        auth_code: Optional[str] = None,
         status_detail: Optional[str] = None,
         actions: Optional[_actions.Actions] = None,
     ):
         super().__init__(dttm, result_code, result_message)
         self.pay_id = pay_id
         self.payment_status = payment_status
-        self.auth_code = auth_code
         self.status_detail = status_detail
         self.actions = actions
 
     @classmethod
     def _from_json(
         cls, response: dict, dttm: str, result_code: int, result_message: str
-    ) -> "PaymentStatusResponse":
-        """Return payment status result from JSON."""
+    ) -> "OneClickPaymentInitResponse":
+        """Return payment init result from JSON."""
         return cls(
             response["payId"],
             dttm,
             result_code,
             result_message,
-            (
+            payment_status=(
                 get_payment_status(response["paymentStatus"])
                 if response.get("paymentStatus")
                 else None
             ),
-            response.get("authCode"),
-            response.get("statusDetail"),
-            (
+            status_detail=response.get("statusDetail"),
+            actions=(
                 _actions.Actions.from_json(response["actions"])
-                if response.get("actions")
+                if "actions" in response
                 else None
             ),
         )
@@ -59,7 +56,6 @@ class PaymentStatusResponse(Response):
             self.result_code,
             self.result_message,
             self.payment_status.value if self.payment_status else None,
-            self.auth_code,
             self.status_detail,
             self.actions.to_sign_text() if self.actions else None,
         )
@@ -71,9 +67,7 @@ class PaymentStatusResponse(Response):
             f"dttm='{self.dttm}', "
             f"result_code={self.result_code}, "
             f"result_message='{self.result_message}', "
-            f"payment_status={self.payment_status}, "
-            f"auth_code={self.auth_code}, "
-            f"status_detail={self.status_detail}, "
-            f"actions={self.actions}"
+            f"status={self.payment_status}, "
+            f"status_detail={self.status_detail}"
             ")"
         )

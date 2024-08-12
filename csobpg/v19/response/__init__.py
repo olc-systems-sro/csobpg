@@ -1,6 +1,9 @@
 """API response wrappers."""
 
 from .base import PaymentStatus
+from .oneclick_echo import OneClickEchoResponse
+from .oneclick_payment_init import OneClickPaymentInitResponse
+from .oneclick_payment_process import OneClickPaymentProcessResponse
 from .payment_close import PaymentCloseResponse
 from .payment_init import PaymentInitResponse
 from .payment_process import PaymentProcessResponse
@@ -16,4 +19,7 @@ __all__ = [
     "PaymentCloseResponse",
     "PaymentRefundResponse",
     "PaymentProcessResponse",
+    "OneClickPaymentInitResponse",
+    "OneClickPaymentProcessResponse",
+    "OneClickEchoResponse",
 ]

@@ -1,4 +1,4 @@
-"""Customer package."""
+"""Customer models."""
 
 from .account import AccountData
 from .data import CustomerData, PhoneNumber

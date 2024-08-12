@@ -11,10 +11,15 @@ pip install csobpg
 
 ## Basic usage
 ### API client initialization
+The `APIClient` provides the interface to communicate with the API.
+
 ```python
 from csobpg.v19 import APIClient
 
 client = APIClient("merchantId", "merch_private.key", "csob.pub", base_url=..., http_client=...)
+
+# Use the client to interact with the API:
+client.init_payment(...)
 ```
 
 ### HTTP client
@@ -38,45 +43,54 @@ class CustomHTTPClient(HTTPClient):
 client = APIClient(..., http_client=CustomHTTPClient(...))
 ```
 
-### Payment initialization
+## Base methods
+The library supports all base API methods.
+For example, that's how to initialize a payment:
 ```python
-from csobpg.v19 import Cart, CartItem
+from csobpg.v19.models import cart
 
 response = client.init_payment(
     order_no="2233823251",
     total_amount=100,
-    return_url="http://127.0.0.1:5000/",
-    cart=Cart([CartItem("Apples", 1, 100)]),
+    return_url="http://127.0.0.1:5000",
+    cart=cart.Cart([cart.CartItem("Apples", 1, 100)]),
     merchant_data=b"Hello, World!",
 )
 ```
 
-### Get payment URL
+## OneClick methods
+Here are the steps to perform a OneClick payment.
+
+### Step 1 - make a regular payment
+First, make a regular payment using the "payment/init":
 ```python
-url = client.get_payment_process_url(pay_id)
+response = client.payment_init(...)
+
+# finalize payment...
 ```
 
-### Process the gateway redirect
+Preserve the `response.pay_id`, it will be used to refer to the OneClick template.
+
+### Step 2 - initialize OneClick payment
+Now, having the template ID, initialize the OneClick payment.
+First, check that the template ID exists (optional):
 ```python
-response = client.process_gateway_return(data_dict)
+response = client.oneclick_echo(template_id)
+assert response.success
 ```
 
-### Get payment status
+Then, initiate the payment:
 ```python
-response = client.get_payment_status(pay_id)
+response = client.oneclick_init_payment(template_id=..., ...)
 ```
 
-### Reverse payment
-```python
-response = client.reverse_payment(pay_id)
+### Step 3 - process OneClick payment
+Finally, process the payment:
+```
+response = client.oneclick_process(pay_id, fingerprint=...)
 ```
 
-### Refund payment
-```python
-response = client.refund_payment(pay_id, amount=100)
-```
-
-### Exceptions handling
+## Exceptions handling
 ```python
 from csobpg.v19.errors import APIError, APIClientError
 from csobpg.http import HTTPRequestError
@@ -103,7 +117,7 @@ except ValueError as exc:
     # it always means developer's mistake
 ```
 
-### RSA keys management
+## RSA keys management
 The simples way to pass RSA keys is to pass their file paths:
 
 ```python
@@ -117,7 +131,8 @@ The library will read the private key from the file when needed. The public key 
 If you want to change it, use special classes:
 
 ```python
-from csobpg.v19 import APIClient, FileRSAKey, CachedRSAKey
+from csobpg.v19 import APIClient
+from csobpg.v19.key import FileRSAKey, CachedRSAKey
 
 client = APIClient(..., FileRSAKey("merch_private.key"), FileRSAKey("csob.pub"))
 ```
@@ -125,7 +140,7 @@ client = APIClient(..., FileRSAKey("merch_private.key"), FileRSAKey("csob.pub"))
 You may also override the base RSAKey class to define your own key access strategy:
 
 ```python
-from csobpg.v19 import RSAKey
+from csobpg.v19.key import RSAKey
 
 class MyRSAKey(RSAKey):
 

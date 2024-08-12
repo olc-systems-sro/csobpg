@@ -2,8 +2,8 @@
 
 from typing import Optional
 
-from ....signature import SignedModel
-from ...fields import _IntField
+from ...signature import SignedModel
+from ..fields import _IntField
 
 
 class AccountData(SignedModel):

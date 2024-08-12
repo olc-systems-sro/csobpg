@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Optional
 
-from ....signature import SignedModel
+from ...signature import SignedModel
 
 
 class AuthMethod(Enum):

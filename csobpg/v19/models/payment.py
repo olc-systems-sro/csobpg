@@ -16,3 +16,10 @@ class PaymentMethod(Enum):
 
     CARD = "card"
     CARD_LVP = "card#LVP"
+
+
+class ReturnMethod(Enum):
+    """Return method."""
+
+    POST = "POST"
+    GET = "GET"

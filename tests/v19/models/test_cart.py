@@ -4,12 +4,12 @@ from typing import Optional
 
 import pytest
 
-from csobpg.v19 import Cart, CartItem
+from csobpg.v19.models import cart
 
 
 def test_cart_item_as_json():
     """Test for the CartItem.as_json()."""
-    item = CartItem("example_name", 10, 100)
+    item = cart.CartItem("example_name", 10, 100)
     assert item.as_json() == {
         "name": "example_name",
         "quantity": 10,
@@ -34,27 +34,27 @@ def test_cart_item_invalid_args(
 ):
     """Test for the invalid CartItem args."""
     with pytest.raises(ValueError):
-        CartItem(name, quantity, amount, description)
+        cart.CartItem(name, quantity, amount, description)
 
 
 def test_cart_as_json():
     """Test for the Cart.as_json()."""
-    item = CartItem("example", 1, 1)
-    assert Cart([item]).as_json() == [item.as_json()]
+    item = cart.CartItem("example", 1, 1)
+    assert cart.Cart([item]).as_json() == [item.as_json()]
 
 
-@pytest.mark.parametrize("items", [[], [CartItem("example", 1, 1)] * 3])
+@pytest.mark.parametrize("items", [[], [cart.CartItem("example", 1, 1)] * 3])
 def test_invalid_size(items):
     """Test for the invalid cart size."""
     with pytest.raises(ValueError, match="1 or 2"):
-        Cart(items)
+        cart.Cart(items)
 
 
 def test_total_amount():
     """Test for the total_amount."""
     assert (
-        Cart(
-            [CartItem("Apples", 2, 10), CartItem("Oranges", 1, 20)]
+        cart.Cart(
+            [cart.CartItem("Apples", 2, 10), cart.CartItem("Oranges", 1, 20)]
         ).total_amount
         == 40
     )
