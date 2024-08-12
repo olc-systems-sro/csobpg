@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ...signature import SignedModel
+from ..signature import SignedModel
 
 
 class SDK(SignedModel):

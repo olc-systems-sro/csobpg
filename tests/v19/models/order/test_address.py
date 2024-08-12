@@ -2,7 +2,7 @@
 
 import pytest
 
-from csobpg.v19.request.payment_init import order
+from csobpg.v19.models import order
 
 
 @pytest.mark.parametrize(

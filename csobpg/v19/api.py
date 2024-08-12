@@ -5,6 +5,17 @@ from typing import Optional, Union
 
 from csobpg.http import HTTPClient
 from csobpg.http.urllib_client import UrllibHTTPClient
+from csobpg.v19.models.cart import Cart
+from csobpg.v19.models.currency import Currency
+from csobpg.v19.models.customer import CustomerData
+from csobpg.v19.models.fingerprint import Fingerprint
+from csobpg.v19.models.order import OrderData
+from csobpg.v19.models.payment import (
+    PaymentMethod,
+    PaymentOperation,
+    ReturnMethod,
+)
+from csobpg.v19.models.webpage import WebPageAppearanceConfig, WebPageLanguage
 
 from . import request as _request
 from . import response as _response
@@ -41,25 +52,24 @@ class APIClient:
         self._log = logging.getLogger(__name__)
 
     def init_payment(
-        # pylint:disable=line-too-long
         self,
         order_no: str,
         total_amount: int,
         return_url: str,
-        return_method: _request.payment_init.ReturnMethod = _request.payment_init.ReturnMethod.POST,
-        payment_operation: _request.payment_init.PaymentOperation = _request.payment_init.PaymentOperation.PAYMENT,
-        payment_method: _request.payment_init.PaymentMethod = _request.payment_init.PaymentMethod.CARD,
-        currency: _request.payment_init.Currency = _request.payment_init.Currency.CZK,
+        return_method: ReturnMethod = ReturnMethod.POST,
+        payment_operation: PaymentOperation = PaymentOperation.PAYMENT,
+        payment_method: PaymentMethod = PaymentMethod.CARD,
+        currency: Currency = Currency.CZK,
         close_payment: bool = True,
         ttl_sec: int = 600,
-        cart: Optional[_request.payment_init.Cart] = None,
-        customer: Optional[_request.payment_init.CustomerData] = None,
-        order: Optional[_request.payment_init.OrderData] = None,
+        cart: Optional[Cart] = None,
+        customer: Optional[CustomerData] = None,
+        order: Optional[OrderData] = None,
         merchant_data: Optional[bytes] = None,
         customer_id: Optional[str] = None,
         payment_expiry: Optional[int] = None,
         # pylint:disable=line-too-long, too-many-locals
-        page_appearance: _request.payment_init.WebPageAppearanceConfig = _request.payment_init.WebPageAppearanceConfig(),
+        page_appearance: WebPageAppearanceConfig = WebPageAppearanceConfig(),
     ) -> _response.PaymentInitResponse:
         """Init payment."""
         self._log.info(
@@ -83,7 +93,7 @@ class APIClient:
             customer_id,
             payment_expiry,
         )
-        request = _request.payment_init.PaymentInitRequest(
+        request = _request.PaymentInitRequest(
             self.merchant_id,
             str(self.private_key),
             order_no=order_no,
@@ -118,19 +128,19 @@ class APIClient:
         template_id: str,
         order_no: str,
         return_url: str,
-        return_method: _request.payment_init.ReturnMethod = _request.payment_init.ReturnMethod.POST,
-        payment_method: _request.payment_init.PaymentMethod = _request.payment_init.PaymentMethod.CARD,
+        return_method: ReturnMethod = ReturnMethod.POST,
+        payment_method: PaymentMethod = PaymentMethod.CARD,
         client_ip: Optional[str] = None,
         total_amount: Optional[int] = None,
-        currency: Optional[_request.payment_init.Currency] = None,
+        currency: Optional[Currency] = None,
         close_payment: Optional[bool] = None,
-        customer: Optional[_request.payment_init.CustomerData] = None,
-        order: Optional[_request.payment_init.OrderData] = None,
+        customer: Optional[CustomerData] = None,
+        order: Optional[OrderData] = None,
         client_initiated: bool = True,
         sdk_used: bool = False,
         merchant_data: Optional[bytes] = None,
         ttl_sec: Optional[int] = None,
-        language: _request.payment_init.WebPageLanguage = _request.payment_init.WebPageLanguage.CS,
+        language: WebPageLanguage = WebPageLanguage.CS,
     ) -> _response.OneClickPaymentInitResponse:
         """Init OneClick payment.
 
@@ -187,9 +197,7 @@ class APIClient:
         )
 
     def oneclick_process(
-        self,
-        pay_id: str,
-        fingerprint: Optional[_request.oneclick_process.Fingerprint] = None,
+        self, pay_id: str, fingerprint: Optional[Fingerprint] = None
     ) -> _response.OneClickPaymentProcessResponse:
         """Start OneClick payment processing."""
         self._log.info(

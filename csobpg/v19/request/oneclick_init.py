@@ -2,8 +2,14 @@
 
 from typing import Optional
 
-from . import payment_init as _pay_init
+from csobpg.v19.models import currency as _currency
+from csobpg.v19.models import customer as _customer
+from csobpg.v19.models import order as _order
+from csobpg.v19.models import payment as _payment
+from csobpg.v19.models import webpage as _webpage
+
 from .base import BaseRequest
+from .merchant import pack_merchant_data
 
 
 class OneClickPaymentInitRequest(BaseRequest):
@@ -17,19 +23,19 @@ class OneClickPaymentInitRequest(BaseRequest):
         template_id: str,
         order_no: str,
         return_url: str,
-        return_method: _pay_init.ReturnMethod = _pay_init.ReturnMethod.POST,
-        payment_method: _pay_init.PaymentMethod = _pay_init.PaymentMethod.CARD,
+        return_method: _payment.ReturnMethod = _payment.ReturnMethod.POST,
+        payment_method: _payment.PaymentMethod = _payment.PaymentMethod.CARD,
         client_ip: Optional[str] = None,
         total_amount: Optional[int] = None,
-        currency: Optional[_pay_init.Currency] = None,
+        currency: Optional[_currency.Currency] = None,
         close_payment: Optional[bool] = None,
-        customer: Optional[_pay_init.CustomerData] = None,
-        order: Optional[_pay_init.OrderData] = None,
+        customer: Optional[_customer.CustomerData] = None,
+        order: Optional[_order.OrderData] = None,
         client_initiated: bool = True,
         sdk_used: bool = False,
         merchant_data: Optional[bytes] = None,
         ttl_sec: Optional[int] = None,
-        language: _pay_init.WebPageLanguage = _pay_init.WebPageLanguage.CS,
+        language: _webpage.WebPageLanguage = _webpage.WebPageLanguage.CS,
     ) -> None:
         super().__init__("oneclick/init", merchant_id, private_key)
         self.template_id = template_id
@@ -46,9 +52,7 @@ class OneClickPaymentInitRequest(BaseRequest):
         self.client_initiated = client_initiated
         self.sdk_used = sdk_used
         self.merchant_data = (
-            _pay_init.pack_merchant_data(merchant_data)
-            if merchant_data
-            else None
+            pack_merchant_data(merchant_data) if merchant_data else None
         )
         self.ttl_sec = ttl_sec
         self.language = language

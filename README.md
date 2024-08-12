@@ -47,13 +47,13 @@ client = APIClient(..., http_client=CustomHTTPClient(...))
 The library supports all base API methods.
 For example, that's how to initialize a payment:
 ```python
-from csobpg.v19 import Cart, CartItem
+from csobpg.v19.models import cart
 
 response = client.init_payment(
     order_no="2233823251",
     total_amount=100,
     return_url="http://127.0.0.1:5000",
-    cart=Cart([CartItem("Apples", 1, 100)]),
+    cart=cart.Cart([cart.CartItem("Apples", 1, 100)]),
     merchant_data=b"Hello, World!",
 )
 ```
@@ -131,7 +131,8 @@ The library will read the private key from the file when needed. The public key 
 If you want to change it, use special classes:
 
 ```python
-from csobpg.v19 import APIClient, FileRSAKey, CachedRSAKey
+from csobpg.v19 import APIClient
+from csobpg.v19.key import FileRSAKey, CachedRSAKey
 
 client = APIClient(..., FileRSAKey("merch_private.key"), FileRSAKey("csob.pub"))
 ```
@@ -139,7 +140,7 @@ client = APIClient(..., FileRSAKey("merch_private.key"), FileRSAKey("csob.pub"))
 You may also override the base RSAKey class to define your own key access strategy:
 
 ```python
-from csobpg.v19 import RSAKey
+from csobpg.v19.key import RSAKey
 
 class MyRSAKey(RSAKey):
 

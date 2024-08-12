@@ -2,8 +2,9 @@
 
 from typing import Optional
 
+from csobpg.v19.models import actions as _actions
+
 from .base import PaymentStatus, Response, get_payment_status
-from .payment_status import Actions
 
 
 class OneClickPaymentProcessResponse(Response):
@@ -17,7 +18,7 @@ class OneClickPaymentProcessResponse(Response):
         result_message: str,
         payment_status: Optional[PaymentStatus] = None,
         status_detail: Optional[str] = None,
-        actions: Optional[Actions] = None,
+        actions: Optional[_actions.Actions] = None,
     ):
         super().__init__(dttm, result_code, result_message)
         self.pay_id = pay_id
@@ -42,7 +43,7 @@ class OneClickPaymentProcessResponse(Response):
             ),
             status_detail=response.get("statusDetail"),
             actions=(
-                Actions.from_json(response["actions"])
+                _actions.Actions.from_json(response["actions"])
                 if "actions" in response
                 else None
             ),

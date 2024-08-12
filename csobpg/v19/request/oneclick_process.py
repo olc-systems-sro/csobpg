@@ -2,8 +2,8 @@
 
 from typing import Optional
 
-from ..base import BaseRequest
-from .fingerprint import SDK, Browser, Fingerprint
+from .base import BaseRequest
+from ..models.fingerprint import SDK, Browser, Fingerprint
 
 __all__ = [
     "OneClickPaymentProcessRequest",

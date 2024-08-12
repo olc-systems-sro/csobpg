@@ -1,39 +1,17 @@
 """Payment init request package."""
 
-from base64 import b64encode
-from enum import Enum
 from typing import Optional
 
-from ..base import BaseRequest
-from ..dttm import get_payment_expiry
-from .cart import Cart, CartItem
-from .currency import Currency
-from .customer import CustomerData
-from .order import OrderData
-from .payment import PaymentMethod, PaymentOperation
-from .webpage import WebPageAppearanceConfig, WebPageLanguage
+from csobpg.v19.models import cart as _cart
+from csobpg.v19.models import currency as _currency
+from csobpg.v19.models import customer as _customer
+from csobpg.v19.models import order as _order
+from csobpg.v19.models import payment as _payment
+from csobpg.v19.models import webpage as _webpage
 
-
-class ReturnMethod(Enum):
-    """Return method."""
-
-    POST = "POST"
-    GET = "GET"
-
-
-def pack_merchant_data(data: bytes) -> str:
-    """Pack Merchant Data.
-
-    It must be transferred as BASE64 encoded string.
-    """
-    encoded = b64encode(data).decode("UTF-8")
-
-    if len(encoded) > 255:
-        raise ValueError(
-            "Merchant data length encoded to BASE64 is over 255 chars"
-        )
-
-    return encoded
+from .base import BaseRequest
+from .dttm import get_payment_expiry
+from .merchant import pack_merchant_data
 
 
 class PaymentInitRequest(BaseRequest):
@@ -46,19 +24,19 @@ class PaymentInitRequest(BaseRequest):
         order_no: str,
         total_amount: int,
         return_url: str,
-        return_method: ReturnMethod = ReturnMethod.POST,
-        payment_operation: PaymentOperation = PaymentOperation.PAYMENT,
-        payment_method: PaymentMethod = PaymentMethod.CARD,
-        currency: Currency = Currency.CZK,
+        return_method: _payment.ReturnMethod = _payment.ReturnMethod.POST,
+        payment_operation: _payment.PaymentOperation = _payment.PaymentOperation.PAYMENT,
+        payment_method: _payment.PaymentMethod = _payment.PaymentMethod.CARD,
+        currency: _currency.Currency = _currency.Currency.CZK,
         close_payment: bool = True,
         ttl_sec: int = 600,
-        cart: Optional[Cart] = None,
-        customer: Optional[CustomerData] = None,
-        order: Optional[OrderData] = None,
+        cart: Optional[_cart.Cart] = None,
+        customer: Optional[_customer.CustomerData] = None,
+        order: Optional[_order.OrderData] = None,
         merchant_data: Optional[bytes] = None,
         customer_id: Optional[str] = None,
         payment_expiry: Optional[int] = None,
-        page_appearance: WebPageAppearanceConfig = WebPageAppearanceConfig(),
+        page_appearance: _webpage.WebPageAppearanceConfig = _webpage.WebPageAppearanceConfig(),
     ) -> None:
         # pylint:disable=too-many-locals
         super().__init__("payment/init", merchant_id, private_key)
@@ -74,7 +52,7 @@ class PaymentInitRequest(BaseRequest):
         if total_amount <= 0:
             raise ValueError('"total_amount" must be > 0')
 
-        cart = cart or Cart([CartItem("Payment", 1, total_amount)])
+        cart = cart or _cart.Cart([_cart.CartItem("Payment", 1, total_amount)])
 
         if cart.total_amount != total_amount:
             raise ValueError(

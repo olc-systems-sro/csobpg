@@ -2,8 +2,8 @@
 
 from typing import List, Optional
 
-from ...signature import SignedModel
-from ..fields import _IntField, _StrField
+from ..signature import SignedModel
+from .fields import _IntField, _StrField
 
 
 class CartItem(SignedModel):

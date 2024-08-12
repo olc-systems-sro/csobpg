@@ -2,8 +2,8 @@
 
 from typing import Optional
 
-from ....signature import SignedModel
-from ...fields import _StrField
+from ...signature import SignedModel
+from ..fields import _StrField
 from .account import AccountData
 from .login import LoginData
 
