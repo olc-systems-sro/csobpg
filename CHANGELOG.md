@@ -5,9 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+
+## [0.2.0] - 2024-08-12
 ### Added
   * Support for OneClick payments
 
+### Changed
+  * All models (e.g. Cart, CartItem, CustomerData, etc.) are moved to the new `csobpg.v19.models` package
+  * Import paths. **Warning**: backward-incompatible change
 
 ## [0.1.1] - 2024-07-19
 ### Added
