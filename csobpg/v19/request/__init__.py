@@ -1,6 +1,9 @@
 """API request wrappers."""
 
 from .echo import EchoRequest
+from .oneclick_echo import OneClickEchoRequest
+from .oneclick_init import OneClickPaymentInitRequest
+from .oneclick_process import OneClickPaymentProcessRequest
 from .payment_close import PaymentCloseRequest
 from .payment_init import PaymentInitRequest
 from .payment_process import PaymentProcessRequest

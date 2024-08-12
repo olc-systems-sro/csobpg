@@ -11,7 +11,7 @@ from .currency import Currency
 from .customer import CustomerData
 from .order import OrderData
 from .payment import PaymentMethod, PaymentOperation
-from .webpage import WebPageAppearanceConfig
+from .webpage import WebPageAppearanceConfig, WebPageLanguage
 
 
 class ReturnMethod(Enum):
@@ -21,7 +21,11 @@ class ReturnMethod(Enum):
     GET = "GET"
 
 
-def _pack_merchant_data(data: bytes) -> str:
+def pack_merchant_data(data: bytes) -> str:
+    """Pack Merchant Data.
+
+    It must be transferred as BASE64 encoded string.
+    """
     encoded = b64encode(data).decode("UTF-8")
 
     if len(encoded) > 255:
@@ -90,7 +94,7 @@ class PaymentInitRequest(BaseRequest):
         self.customer = customer
         self.order = order
         self.merchant_data = (
-            _pack_merchant_data(merchant_data) if merchant_data else None
+            pack_merchant_data(merchant_data) if merchant_data else None
         )
         self.customer_id = customer_id
         self.payment_expiry = get_payment_expiry(payment_expiry)

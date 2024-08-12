@@ -42,6 +42,11 @@ class Response(SignedModel, ABC):
         self.result_code = result_code
         self.result_message = result_message
 
+    @property
+    def success(self) -> bool:
+        """Return whether the request was successful."""
+        return self.result_code == 0
+
     @classmethod
     def from_json(cls, response: dict, public_key: str):
         """Return response from JSON."""
