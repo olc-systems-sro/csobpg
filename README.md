@@ -1,7 +1,7 @@
 # CSOB client
 Python library for communicating with ČSOB (<https://platbakartou.csob.cz/>) payment gateway API. The API is described here: <https://github.com/csob/paymentgateway>.
 
-The library currently implements API v.1.9 only.
+The library currently implements ČSOB API v.1.9.
 
 
 ## Installation
@@ -23,25 +23,10 @@ client.init_payment(...)
 ```
 
 ### HTTP client
-The library uses the `HTTPClient` interface for making HTTP requests.
+The library uses the [httprest](https://github.com/litteratum/httprest) library for making HTTP requests.
+By default it will use `httprest.http.urllib_client.UrllibHTTPClient`.
 
-It provides the following HTTP clients:
-  * `csobpg.http.urllib_client.UrllibHTTPClient` - the default one using the `urllib` under the hood
-  * `csobpg.http.requests_client.RequestsHTTPClient` - an extra HTTP client using the `requests` under the hood. The library must be installed with the `requests-client` extra to be able to use this client
-
-It is also possible to implement the `HTTPClient` interface to use your custom HTTP client.
-
-The HTTP client is set as the following:
-
-```python
-from csobpg.v19 import APIClient
-from csobpg.http import HTTPClient
-
-class CustomHTTPClient(HTTPClient):
-    ...
-
-client = APIClient(..., http_client=CustomHTTPClient(...))
-```
+But you may use any other `httprest's` HTTP client, or even write your own client.
 
 ## Base methods
 The library supports all base API methods.
@@ -93,7 +78,7 @@ response = client.oneclick_process(pay_id, fingerprint=...)
 ## Exceptions handling
 ```python
 from csobpg.v19.errors import APIError, APIClientError
-from csobpg.http import HTTPRequestError
+from httprest.http import HTTPRequestError
 
 response = client.<operation>(...)
 # you can access the response_code directly:

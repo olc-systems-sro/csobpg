@@ -3,8 +3,9 @@
 import logging
 from typing import Optional, Union
 
-from csobpg.http import HTTPClient
-from csobpg.http.urllib_client import UrllibHTTPClient
+from httprest import API
+from httprest.http import HTTPClient
+
 from csobpg.v19.models.cart import Cart
 from csobpg.v19.models.currency import Currency
 from csobpg.v19.models.customer import CustomerData
@@ -22,7 +23,7 @@ from . import response as _response
 from .key import FileRSAKey, RAMRSAKey, RSAKey
 
 
-class APIClient:
+class APIClient(API):
     """API client."""
 
     def __init__(
@@ -31,11 +32,11 @@ class APIClient:
         private_key: Union[str, RSAKey],
         public_key: Union[str, RSAKey],
         base_url: str = "https://api.platebnibrana.csob.cz/api/v1.9",
-        http_client: HTTPClient = UrllibHTTPClient(),
+        http_client: Optional[HTTPClient] = None,
     ) -> None:
         # pylint:disable=too-many-arguments
+        super().__init__(base_url, http_client)
         self.merchant_id = merchant_id
-        self.base_url = base_url.rstrip("/")
 
         if isinstance(private_key, str):
             self.private_key = FileRSAKey(private_key)
@@ -47,9 +48,7 @@ class APIClient:
         else:
             self.public_key = public_key
 
-        self._http_client = http_client
-
-        self._log = logging.getLogger(__name__)
+        self._log = logging.getLogger(str(self))
 
     def init_payment(
         self,
@@ -114,11 +113,7 @@ class APIClient:
             page_appearance=page_appearance,
         )
         return _response.PaymentInitResponse.from_json(
-            self._call_api(
-                "post",
-                self._build_url(request.endpoint),
-                json=request.to_json(),
-            ),
+            self._call_api("post", request.endpoint, json=request.to_json()),
             str(self.public_key),
         )
 
@@ -188,11 +183,7 @@ class APIClient:
             language=language,
         )
         return _response.OneClickPaymentInitResponse.from_json(
-            self._call_api(
-                "post",
-                self._build_url(request.endpoint),
-                json=request.to_json(),
-            ),
+            self._call_api("post", request.endpoint, json=request.to_json()),
             str(self.public_key),
         )
 
@@ -207,8 +198,7 @@ class APIClient:
             self.merchant_id, str(self.private_key), pay_id, fingerprint
         )
         return _response.OneClickPaymentProcessResponse.from_json(
-            self._call_api("post", url=self._build_url(request.endpoint)),
-            str(self.public_key),
+            self._call_api("post", request.endpoint), str(self.public_key)
         )
 
     def oneclick_echo(
@@ -220,9 +210,7 @@ class APIClient:
             self.merchant_id, str(self.private_key), template_id
         )
         return _response.OneClickEchoResponse.from_json(
-            self._call_api(
-                "post", self._build_url(request.endpoint), request.to_json()
-            ),
+            self._call_api("post", request.endpoint, request.to_json()),
             str(self.public_key),
         )
 
@@ -235,8 +223,7 @@ class APIClient:
             self.merchant_id, str(self.private_key), pay_id
         )
         return _response.PaymentStatusResponse.from_json(
-            self._call_api("get", url=self._build_url(request.endpoint)),
-            str(self.public_key),
+            self._call_api("get", request.endpoint), str(self.public_key)
         )
 
     def reverse_payment(self, pay_id: str) -> _response.PaymentReverseResponse:
@@ -249,9 +236,7 @@ class APIClient:
             self.merchant_id, str(self.private_key), pay_id
         )
         return _response.PaymentReverseResponse.from_json(
-            self._call_api(
-                "put", self._build_url(request.endpoint), request.to_json()
-            ),
+            self._call_api("put", request.endpoint, request.to_json()),
             str(self.public_key),
         )
 
@@ -273,11 +258,7 @@ class APIClient:
             self.merchant_id, str(self.private_key), pay_id, total_amount
         )
         return _response.PaymentCloseResponse.from_json(
-            self._call_api(
-                "put",
-                self._build_url(request.endpoint),
-                json=request.to_json(),
-            ),
+            self._call_api("put", request.endpoint, json=request.to_json()),
             str(self.public_key),
         )
 
@@ -298,9 +279,7 @@ class APIClient:
             self.merchant_id, str(self.private_key), pay_id, amount
         )
         return _response.PaymentRefundResponse.from_json(
-            self._call_api(
-                "put", self._build_url(request.endpoint), request.to_json()
-            ),
+            self._call_api("put", request.endpoint, request.to_json()),
             str(self.public_key),
         )
 
@@ -321,9 +300,7 @@ class APIClient:
         """Make an echo request."""
         self._log.info("Making echo request")
         request = _request.EchoRequest(self.merchant_id, str(self.private_key))
-        self._call_api(
-            "post", self._build_url(request.endpoint), request.to_json()
-        )
+        self._call_api("post", request.endpoint, request.to_json())
 
     def process_gateway_return(
         self, datadict: dict
@@ -344,13 +321,10 @@ class APIClient:
         )
 
     def _call_api(
-        self, method: str, url: str, json: Optional[dict] = None
+        self, method: str, endpoint: str, json: Optional[dict] = None
     ) -> dict:
-        http_response = self._http_client.request(method, url, json)
+        http_response = self._request(method, endpoint, json)
         return http_response.json or {}
-
-    def _build_url(self, endpoint: str) -> str:
-        return f"{self.base_url}/{endpoint.strip('/')}/"
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(merchant_id='{self.merchant_id}')"
