@@ -39,7 +39,7 @@ lintdeps:
 lint:
 	black -l 79 . --check
 	pydocstyle --ignore=D102,D103,D105,D107,D203,D213 $(PACKAGE)/** tests/**
-	pylint $(PACKAGE) tests
+	pylint --rcfile=pyproject.toml $(PACKAGE) tests
 
 .PHONY: testall
 testall: lint test
