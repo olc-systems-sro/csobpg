@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
   * Use `httprest` library for HTTP requests
+  * Unit tests for the `api.py`
+
+### Fixed
+  * `APIClient.oneclick_process` method (JSON body was missing in the request)
 
 ### Changed
   * Drop support for Python 3.7

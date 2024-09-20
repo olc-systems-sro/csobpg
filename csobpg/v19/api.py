@@ -198,7 +198,8 @@ class APIClient(API):
             self.merchant_id, str(self.private_key), pay_id, fingerprint
         )
         return _response.OneClickPaymentProcessResponse.from_json(
-            self._call_api("post", request.endpoint), str(self.public_key)
+            self._call_api("post", request.endpoint, request.to_json()),
+            str(self.public_key),
         )
 
     def oneclick_echo(
