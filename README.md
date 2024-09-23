@@ -1,3 +1,4 @@
+[![Codecov](https://codecov.io/gh/litteratum/csobpg/branch/master/graph/badge.svg)](https://codecov.io/gh/litteratum/csobpg)
 # CSOB client
 Python library for communicating with ČSOB (<https://platbakartou.csob.cz/>) payment gateway API. The API is described here: <https://github.com/csob/paymentgateway>.
 
