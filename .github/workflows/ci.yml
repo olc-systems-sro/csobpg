@@ -31,13 +31,11 @@ jobs:
           virtualenvs-create: false
           virtualenvs-in-project: true
       - name: Install nox
-        run: pip install nox
-      - name: Run tests
-        run: nox -s tests --no-error-on-missing-interpreters
-      - name: Run linting
-        run: nox -s lint --no-error-on-missing-interpreters
+        uses: daisylb/setup-nox@v2.1.0
+      - name: Run tests and lint
+        run: nox
       - name: Run coverage
-        run: nox -s coverage --no-error-on-missing-interpreters
+        run: nox -s coverage
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
         with:
