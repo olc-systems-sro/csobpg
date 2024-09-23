@@ -32,5 +32,13 @@ jobs:
           virtualenvs-in-project: true
       - name: Install nox
         run: pip install nox
-      - name: Run nox
-        run: nox --no-error-on-missing-interpreters
+      - name: Run tests
+        run: nox -s tests --no-error-on-missing-interpreters
+      - name: Run linting
+        run: nox -s lint --no-error-on-missing-interpreters
+      - name: Run coverage
+        run: nox -s coverage --no-error-on-missing-interpreters
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
