@@ -111,6 +111,7 @@ def test_init_payment():
                 "totalAmount": 1000,
                 "ttlSec": 600,
             },
+            "cert": None,
             "method": "post",
             "url": f"{comps.base_url}/payment/init",
         },
@@ -160,6 +161,7 @@ def test_get_payment_status():
                 "Ef%2BwJPEDUiDQNvrVVRjgi1IwT1CrWsRAMp%2Bmn9Dfck4%2BrjVCB9ZpiE3"
                 "%2B11UPPxFEchcgYYBzOQ3ZJnFY8hpNuCt7gqJ2VE%2FagxmRQ%3D%3D"
             ),
+            "cert": None,
         },
     ]
 
@@ -212,6 +214,7 @@ def test_reverse_payment():
             },
             "method": "put",
             "url": f"{comps.base_url}/payment/reverse",
+            "cert": None,
         },
     ]
 
@@ -265,6 +268,7 @@ def test_close_payment():
             },
             "method": "put",
             "url": f"{comps.base_url}/payment/close",
+            "cert": None,
         },
     ]
 
@@ -318,6 +322,7 @@ def test_refund_payment():
             },
             "method": "put",
             "url": f"{comps.base_url}/payment/refund",
+            "cert": None,
         },
     ]
 
@@ -363,6 +368,7 @@ def test_echo():
             },
             "method": "post",
             "url": f"{comps.base_url}/echo",
+            "cert": None,
         },
     ]
 
@@ -447,6 +453,7 @@ def test_oneclick_init_payment():
             },
             "method": "post",
             "url": f"{comps.base_url}/oneclick/init",
+            "cert": None,
         },
     ]
 
@@ -499,6 +506,7 @@ def test_oneclick_process():
             },
             "method": "post",
             "url": f"{comps.base_url}/oneclick/process",
+            "cert": None,
         },
     ]
 
@@ -548,5 +556,6 @@ def test_oneclick_echo():
             },
             "method": "post",
             "url": f"{comps.base_url}/oneclick/echo",
+            "cert": None,
         },
     ]
