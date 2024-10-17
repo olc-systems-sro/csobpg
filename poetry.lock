@@ -322,13 +322,13 @@ python-dateutil = ">=2.7"
 
 [[package]]
 name = "httprest"
-version = "0.1.2"
+version = "0.3.0"
 description = "A library for making simple REST-like HTTP requests"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "httprest-0.1.2-py3-none-any.whl", hash = "sha256:2757e9535962d65e11b508438457f48c6b3cc2c4d83f9d66c68ea895f96331d4"},
-    {file = "httprest-0.1.2.tar.gz", hash = "sha256:66f6d92aeefb72fd1e5604c1bbd6e606842dfbfc6ba3b256e84b9c01fbfd1f53"},
+    {file = "httprest-0.3.0-py3-none-any.whl", hash = "sha256:18798a576135bf928159c6f1233edb96d1f03f33648de3c725d1b7c754ff399f"},
+    {file = "httprest-0.3.0.tar.gz", hash = "sha256:8d0031c63958ac5a7a78a438cffa2f5d415fa144904be0c9e36817759006d656"},
 ]
 
 [package.extras]
@@ -753,4 +753,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9, <3.13"
-content-hash = "7e87772151bafccd578d4e5f9545df0ffbb66ef75d8cb59bd84da11d7e61b518"
+content-hash = "402649c3562f955ee73b405e217e97cac9c885f25453d3c54b40d60aa09e4535"

@@ -115,7 +115,7 @@ class APIClient(API):
         return _response.PaymentInitResponse.from_json(
             self._call_api("post", request.endpoint, json=request.to_json()),
             str(self.public_key),
-        )
+        )  # type: ignore
 
     def oneclick_init_payment(
         # pylint:disable=line-too-long, too-many-locals
@@ -185,7 +185,7 @@ class APIClient(API):
         return _response.OneClickPaymentInitResponse.from_json(
             self._call_api("post", request.endpoint, json=request.to_json()),
             str(self.public_key),
-        )
+        )  # type: ignore
 
     def oneclick_process(
         self, pay_id: str, fingerprint: Optional[Fingerprint] = None
@@ -200,7 +200,7 @@ class APIClient(API):
         return _response.OneClickPaymentProcessResponse.from_json(
             self._call_api("post", request.endpoint, request.to_json()),
             str(self.public_key),
-        )
+        )  # type: ignore
 
     def oneclick_echo(
         self, template_id: str
@@ -213,7 +213,7 @@ class APIClient(API):
         return _response.OneClickEchoResponse.from_json(
             self._call_api("post", request.endpoint, request.to_json()),
             str(self.public_key),
-        )
+        )  # type: ignore
 
     def get_payment_status(
         self, pay_id: str
@@ -225,7 +225,7 @@ class APIClient(API):
         )
         return _response.PaymentStatusResponse.from_json(
             self._call_api("get", request.endpoint), str(self.public_key)
-        )
+        )  # type: ignore
 
     def reverse_payment(self, pay_id: str) -> _response.PaymentReverseResponse:
         """Reverse payment.
@@ -239,7 +239,7 @@ class APIClient(API):
         return _response.PaymentReverseResponse.from_json(
             self._call_api("put", request.endpoint, request.to_json()),
             str(self.public_key),
-        )
+        )  # type: ignore
 
     def close_payment(
         self, pay_id: str, total_amount: Optional[int] = None
@@ -261,7 +261,7 @@ class APIClient(API):
         return _response.PaymentCloseResponse.from_json(
             self._call_api("put", request.endpoint, json=request.to_json()),
             str(self.public_key),
-        )
+        )  # type: ignore
 
     def refund_payment(
         self, pay_id: str, amount: Optional[int] = None
@@ -282,7 +282,7 @@ class APIClient(API):
         return _response.PaymentRefundResponse.from_json(
             self._call_api("put", request.endpoint, request.to_json()),
             str(self.public_key),
-        )
+        )  # type: ignore
 
     def get_payment_process_url(self, pay_id: str) -> str:
         """Build payment URL.
@@ -319,7 +319,7 @@ class APIClient(API):
 
         return _response.PaymentProcessResponse.from_json(
             data, str(self.public_key)
-        )
+        )  # type: ignore
 
     def _call_api(
         self, method: str, endpoint: str, json: Optional[dict] = None
