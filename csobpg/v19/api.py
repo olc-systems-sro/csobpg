@@ -325,6 +325,7 @@ class APIClient(API):
         self, method: str, endpoint: str, json: Optional[dict] = None
     ) -> dict:
         http_response = self._request(method, endpoint, json)
+        http_response.raise_for_status()
         return http_response.json or {}
 
     def __str__(self) -> str:
