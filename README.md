@@ -81,13 +81,8 @@ response = client.oneclick_process(pay_id, fingerprint=...)
 from csobpg.v19.errors import APIError, APIClientError
 from httprest.http import HTTPRequestError
 
-response = client.<operation>(...)
-# you can access the response_code directly:
-assert response.result_code == 0
-
-# or call the `raise_for_result_code` method and handle exceptions:
 try:
-    response.raise_for_result_code()
+    response = client.<operation>(...)
 except APIError as exc:
     # handle API error
     # it is raised on any API error. You may also catch the specific API error
