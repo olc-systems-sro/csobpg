@@ -6,10 +6,10 @@ from typing import Optional
 
 import pytest
 from freezegun import freeze_time
-from httprest.http.errors import HTTPError
 from httprest.http.fake_client import FakeHTTPClient, HTTPResponse
 
 from csobpg.v19.api import APIClient
+from csobpg.v19.errors import APIError
 from csobpg.v19.key import RAMRSAKey, RSAKey
 from csobpg.v19.response import PaymentStatus
 from csobpg.v19.response.oneclick_echo import OneClickEchoResponse
@@ -330,20 +330,20 @@ def test_refund_payment():
 
 
 @freeze_time("1955-11-12")
-def test_http_error_code():
-    """Test for an HTTP error."""
+def test_api_error():
+    """Test for an API error."""
     comps = _Components.compose(
         http_client=FakeHTTPClient(
             responses=[
                 HTTPResponse(
                     401,
-                    jsonlib.dumps({}).encode(),
+                    jsonlib.dumps({"resultCode": 110}).encode(),
                     headers={"Content-Type": "application/json"},
                 )
             ]
         )
     )
-    with pytest.raises(HTTPError):
+    with pytest.raises(APIError):
         comps.api.refund_payment("oid", amount=1010)
 
 

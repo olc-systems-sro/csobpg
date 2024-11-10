@@ -1,8 +1,5 @@
 """Test for base response."""
 
-import pytest
-
-from csobpg.v19.errors import APIMissingParamError
 from csobpg.v19.response.base import Response
 
 
@@ -18,11 +15,3 @@ class _TestResponse(Response):
 
     def _get_params_sequence(self) -> tuple:
         return tuple()
-
-
-def test_raise_for_code():
-    """Test exception raising for code != 0."""
-    resp = _TestResponse("", 100, "message")
-
-    with pytest.raises(APIMissingParamError):
-        resp.raise_for_result_code()

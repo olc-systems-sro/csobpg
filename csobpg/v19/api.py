@@ -313,7 +313,7 @@ class APIClient(API):
         for key in datadict:
             data[key] = (
                 int(datadict[key])
-                if key in ("resultCode", "paymentStatus")
+                if key in ("paymentStatus",)
                 else datadict[key]
             )
 
@@ -324,9 +324,7 @@ class APIClient(API):
     def _call_api(
         self, method: str, endpoint: str, json: Optional[dict] = None
     ) -> dict:
-        http_response = self._request(method, endpoint, json)
-        http_response.raise_for_status()
-        return http_response.json or {}
+        return self._request(method, endpoint, json).json or {}
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(merchant_id='{self.merchant_id}')"

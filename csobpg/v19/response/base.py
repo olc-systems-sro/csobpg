@@ -34,6 +34,19 @@ def get_payment_status(status: int) -> PaymentStatus:
         raise APIClientError(f'Unexpected paymentStatus "{status}"') from None
 
 
+def _parse_result_code(response: dict) -> int:
+    try:
+        return int(response["resultCode"])
+    except KeyError:
+        raise APIClientError(
+            "API response does not contain resultCode"
+        ) from None
+    except ValueError:
+        raise APIClientError(
+            f"Invalid resultCode {response['resultCode']} in response"
+        ) from None
+
+
 class Response(SignedModel, ABC):
     """API response."""
 
@@ -53,16 +66,8 @@ class Response(SignedModel, ABC):
         if not response:
             raise APIClientError("API returned empty response")
 
-        try:
-            result_code = int(response["resultCode"])
-        except KeyError:
-            raise APIClientError(
-                "API response does not contain resultCode"
-            ) from None
-        except ValueError:
-            raise APIClientError(
-                f"Invalid resultCode {response['resultCode']} in response"
-            ) from None
+        result_code = _parse_result_code(response)
+        raise_for_result_code(result_code, response.get("resultMessage", ""))
 
         obj = cls._from_json(
             response,
@@ -79,10 +84,6 @@ class Response(SignedModel, ABC):
         verify(signature, obj.to_sign_text().encode(), public_key)
 
         return obj
-
-    def raise_for_result_code(self) -> None:
-        """Raise exception if result code != 0."""
-        raise_for_result_code(self.result_code, self.result_message)
 
     @classmethod
     @abstractmethod
