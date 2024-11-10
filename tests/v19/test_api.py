@@ -4,7 +4,9 @@ import json as jsonlib
 from dataclasses import dataclass
 from typing import Optional
 
+import pytest
 from freezegun import freeze_time
+from httprest.http.errors import HTTPError
 from httprest.http.fake_client import FakeHTTPClient, HTTPResponse
 
 from csobpg.v19.api import APIClient
@@ -325,6 +327,24 @@ def test_refund_payment():
             "cert": None,
         },
     ]
+
+
+@freeze_time("1955-11-12")
+def test_http_error_code():
+    """Test for an HTTP error."""
+    comps = _Components.compose(
+        http_client=FakeHTTPClient(
+            responses=[
+                HTTPResponse(
+                    401,
+                    jsonlib.dumps({}).encode(),
+                    headers={"Content-Type": "application/json"},
+                )
+            ]
+        )
+    )
+    with pytest.raises(HTTPError):
+        comps.api.refund_payment("oid", amount=1010)
 
 
 @freeze_time("1955-11-12")
