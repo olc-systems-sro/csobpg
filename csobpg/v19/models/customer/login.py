@@ -44,4 +44,4 @@ class LoginData(SignedModel):
         return result
 
     def _get_params_sequence(self) -> tuple:
-        return (self.auth, self.auth_at, self.auth_data)
+        return (self.auth.value if self.auth else None, self.auth_at, self.auth_data)

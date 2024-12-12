@@ -70,8 +70,8 @@ class CustomerData(SignedModel):
             self.home_phone,
             self.work_phone,
             self.mobile_phone,
-            self.account,
-            self.login,
+            self.account.to_sign_text() if self.account else None,
+            self.login.to_sign_text() if self.login else None,
         )
 
     def __str__(self) -> str:
