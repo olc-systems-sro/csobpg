@@ -35,11 +35,7 @@ class SignedModel(ABC):
         return "|".join(
             map(
                 _str_or_jsbool,
-                [
-                    item
-                    for item in self._get_params_sequence()
-                    if item is not None
-                ],
+                [item for item in self._get_params_sequence() if item is not None],
             )
         )
 
@@ -68,9 +64,7 @@ def verify(signature: str, text: bytes, key: str) -> None:
     try:
         sig_as_bytes = b64decode(signature)
     except binascii.Error as exc:
-        raise APIInvalidSignatureError(
-            f"Failed to decode base64: {exc}"
-        ) from exc
+        raise APIInvalidSignatureError(f"Failed to decode base64: {exc}") from exc
 
     # pylint:disable=not-callable
     if not verifier.verify(hasher, sig_as_bytes):

@@ -90,7 +90,7 @@ class PaymentInitRequest(BaseRequest):
             self.close_payment,
             self.return_url,
             self.return_method.value,
-            self.cart.to_sign_text(),
+            self.cart.to_sign_text() if self.cart else None,
             self.customer.to_sign_text() if self.customer else None,
             self.order.to_sign_text() if self.order else None,
             self.merchant_data,
