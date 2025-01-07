@@ -49,9 +49,7 @@ class _Components:
         """Compose components."""
         http_client = http_client or FakeHTTPClient()
         return cls(
-            APIClient(
-                merchant_id, private_key, public_key, base_url, http_client
-            ),
+            APIClient(merchant_id, private_key, public_key, base_url, http_client),
             base_url,
             http_client,
         )
